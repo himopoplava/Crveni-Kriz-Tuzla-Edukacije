@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Red Cross Education Calendar</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <section id="loginScreen" class="login-screen">
+      <div class="login-panel">
+        <div class="brand login-brand">
+          <div class="brand-mark" aria-hidden="true">+</div>
+          <div>
+            <h1>Education Calendar</h1>
+            <p>Red Cross team planning</p>
+          </div>
+        </div>
+
+        <form id="loginForm" class="login-form">
+          <div>
+            <p class="eyebrow">Educator and admin login</p>
+            <h2>Sign in</h2>
+          </div>
+
+          <label>
+            Login email
+            <input id="loginEmailInput" type="email" required placeholder="name@example.com" />
+          </label>
+
+          <label>
+            Password
+            <input id="loginPasswordInput" type="password" required placeholder="Your password" />
+          </label>
+
+          <div id="loginError" class="form-error" role="alert"></div>
+
+          <button class="primary-button" type="submit">Log in</button>
+        </form>
+
+        <div class="volunteer-entry">
+          <p>Volunteers do not need a password.</p>
+          <button id="volunteerAccessButton" class="secondary-button full-button" type="button">View volunteer calendar</button>
+        </div>
+
+      </div>
+    </section>
+
+    <div id="appShell" class="app-shell is-hidden">
+      <aside class="sidebar" aria-label="Application navigation">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">+</div>
+          <div>
+            <h1>Education Calendar</h1>
+            <p>Red Cross team planning</p>
+          </div>
+        </div>
+
+        <section class="profile-panel" aria-labelledby="active-profile-heading">
+          <h2 id="active-profile-heading">Active profile</h2>
+          <button id="addProfileButton" class="secondary-button full-button" type="button">Add profile</button>
+          <button id="logoutButton" class="secondary-button full-button" type="button">Log out</button>
+          <div id="profileDetails" class="profile-details"></div>
+        </section>
+
+        <nav class="view-tabs" aria-label="Calendar views">
+          <button class="tab-button active" type="button" data-view="calendar">Calendar</button>
+          <button class="tab-button" type="button" data-view="list">List</button>
+          <button class="tab-button" type="button" data-view="profiles">Profiles</button>
+        </nav>
+
+        <section class="storage-note" aria-labelledby="storage-heading">
+          <h2 id="storage-heading">Storage plan</h2>
+          <p>Supabase stores educator profiles, roles, and education dates. Passwords are handled by Supabase Auth.</p>
+        </section>
+      </aside>
+
+      <main class="main-content">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Shared training schedule</p>
+            <h2 id="pageTitle">Calendar</h2>
+          </div>
+          <div class="topbar-actions">
+            <button id="prevMonth" class="icon-button" type="button" aria-label="Previous month">&lt;</button>
+            <button id="todayButton" class="secondary-button" type="button">Today</button>
+            <button id="nextMonth" class="icon-button" type="button" aria-label="Next month">&gt;</button>
+            <button id="addEventButton" class="primary-button" type="button">Add education</button>
+          </div>
+        </header>
+
+        <section id="calendarView" class="view-section active" aria-labelledby="pageTitle">
+          <div class="calendar-heading">
+            <h3 id="monthLabel"></h3>
+            <p id="calendarSummary"></p>
+          </div>
+          <div class="calendar-grid weekday-grid" aria-hidden="true">
+            <span>Mon</span>
+            <span>Tue</span>
+            <span>Wed</span>
+            <span>Thu</span>
+            <span>Fri</span>
+            <span>Sat</span>
+            <span>Sun</span>
+          </div>
+          <div id="calendarGrid" class="calendar-grid days-grid"></div>
+        </section>
+
+        <section id="listView" class="view-section" aria-labelledby="listHeading">
+          <div class="section-heading">
+            <h3 id="listHeading">Upcoming education sessions</h3>
+            <p>Sorted by date, with educator and capacity details.</p>
+          </div>
+          <div id="eventList" class="event-list"></div>
+        </section>
+
+        <section id="profilesView" class="view-section" aria-labelledby="profilesHeading">
+          <div class="section-heading">
+            <h3 id="profilesHeading">Team profiles</h3>
+            <p>Educators can create sessions. Volunteers can only view the calendar.</p>
+          </div>
+          <div id="profilesGrid" class="profiles-grid"></div>
+        </section>
+      </main>
+    </div>
+
+    <dialog id="eventDialog" class="event-dialog">
+      <form id="eventForm" method="dialog">
+        <div class="dialog-header">
+          <div>
+            <p class="eyebrow">Educator access</p>
+            <h3 id="dialogTitle">Add education</h3>
+          </div>
+          <button class="icon-button" type="button" id="closeDialog" aria-label="Close dialog">x</button>
+        </div>
+
+        <input type="hidden" id="eventId" />
+
+        <label>
+          Education title
+          <input id="titleInput" name="title" type="text" required maxlength="80" placeholder="First Aid Basics" />
+        </label>
+
+        <div class="form-grid">
+          <label>
+            Date
+            <input id="dateInput" name="date" type="date" required />
+          </label>
+          <label>
+            Start time
+            <input id="timeInput" name="time" type="time" required />
+          </label>
+        </div>
+
+        <div class="form-grid">
+          <label>
+            Duration
+            <select id="durationInput" name="duration">
+              <option value="60">1 hour</option>
+              <option value="90" selected>1.5 hours</option>
+              <option value="120">2 hours</option>
+              <option value="180">3 hours</option>
+              <option value="240">4 hours</option>
+            </select>
+          </label>
+          <label>
+            Capacity
+            <input id="capacityInput" name="capacity" type="number" min="1" max="200" value="20" required />
+          </label>
+        </div>
+
+        <label>
+          Location
+          <input id="locationInput" name="location" type="text" maxlength="90" placeholder="Red Cross classroom" />
+        </label>
+
+        <label>
+          Notes
+          <textarea id="notesInput" name="notes" rows="4" maxlength="400" placeholder="Bring notebook, uniform, or other details"></textarea>
+        </label>
+
+        <div id="formError" class="form-error" role="alert"></div>
+
+        <div class="dialog-actions">
+          <button id="deleteEventButton" class="danger-button" type="button">Delete</button>
+          <span></span>
+          <button class="secondary-button" type="button" id="cancelDialog">Cancel</button>
+          <button class="primary-button" type="submit">Save</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="profileDialog" class="event-dialog">
+      <form id="profileForm" method="dialog">
+        <div class="dialog-header">
+          <div>
+            <p class="eyebrow">Team access</p>
+            <h3>Add profile</h3>
+          </div>
+          <button class="icon-button" type="button" id="closeProfileDialog" aria-label="Close dialog">x</button>
+        </div>
+
+        <label>
+          Full name
+          <input id="profileNameInput" name="fullName" type="text" required maxlength="80" placeholder="Name Surname" />
+        </label>
+
+        <label>
+          Auth user ID
+          <input id="profileUserIdInput" name="userId" type="text" required maxlength="80" placeholder="Supabase Auth user ID" />
+        </label>
+
+        <div class="form-grid">
+          <label>
+            Role
+            <select id="profileRoleInput" name="role">
+              <option value="educator">Educator</option>
+              <option value="volunteer" selected>Volunteer</option>
+              <option value="admin">Admin</option>
+            </select>
+          </label>
+          <label>
+            Phone
+            <input id="profilePhoneInput" name="phone" type="tel" maxlength="40" placeholder="+387 61 000 000" />
+          </label>
+        </div>
+
+        <label>
+          Specialty
+          <input id="profileSpecialtyInput" name="specialty" type="text" maxlength="80" placeholder="First Aid, Youth, Logistics" />
+        </label>
+
+        <div id="profileFormError" class="form-error" role="alert"></div>
+
+        <div class="dialog-actions">
+          <span></span>
+          <span></span>
+          <button class="secondary-button" type="button" id="cancelProfileDialog">Cancel</button>
+          <button class="primary-button" type="submit">Save profile</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
